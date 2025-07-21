@@ -1,0 +1,7 @@
+This is a placeholder for the actual eBook PDF file.
+
+In production, you would replace this with the actual "AI Reality Check: What You Aren't Doing, What You Can Do, What You Will Be Able to Do" eBook PDF.
+
+For security reasons, consider storing the actual file in a secure cloud storage service like AWS S3, Google Cloud Storage, or Vercel Blob Storage, and serve it through signed URLs rather than storing it directly in the public directory.
+
+This placeholder ensures the download functionality works during development and testing.

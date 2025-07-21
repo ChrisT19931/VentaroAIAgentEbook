@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model DigitalProduct {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Int      // Price in cents
+  currency    String   @default("usd")
+  fileUrl     String   @map("file_url")
+  fileName    String   @map("file_name")
+  fileSize    Int?     @map("file_size")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  purchases   Purchase[]
+  
+  @@map("digital_products")
+}
+
+model Purchase {
+  id                String   @id @default(cuid())
+  email             String
+  stripePaymentId   String   @unique @map("stripe_payment_id")
+  stripeSessionId   String?  @unique @map("stripe_session_id")
+  productId         String   @map("product_id")
+  amount            Int      // Amount in cents
+  currency          String   @default("usd")
+  status            String   @default("pending") // pending, completed, failed, refunded
+  downloadToken     String   @unique @default(cuid()) @map("download_token")
+  downloadCount     Int      @default(0) @map("download_count")
+  maxDownloads      Int      @default(3) @map("max_downloads")
+  firstName         String?  @map("first_name")
+  lastName          String?  @map("last_name")
+  country           String?
+  ipAddress         String?  @map("ip_address")
+  userAgent         String?  @map("user_agent")
+  referrer          String?
+  utmSource         String?  @map("utm_source")
+  utmMedium         String?  @map("utm_medium")
+  utmCampaign       String?  @map("utm_campaign")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  expiresAt         DateTime? @map("expires_at") // Download link expiration
+  
+  product           DigitalProduct @relation(fields: [productId], references: [id])
+  downloads         Download[]
+  
+  @@map("purchases")
+}
+
+model Download {
+  id          String   @id @default(cuid())
+  purchaseId  String   @map("purchase_id")
+  ipAddress   String   @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  downloadedAt DateTime @default(now()) @map("downloaded_at")
+  
+  purchase    Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  
+  @@map("downloads")
+}
+
+model NewsletterSubscriber {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  firstName   String?
+  lastName    String?
+  source      String?  // landing_page, checkout, referral
+  isActive    Boolean  @default(true)
+  confirmedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("newsletter_subscribers")
+}
+
+model PageView {
+  id          String   @id @default(cuid())
+  page        String   // /, /faq, /contact, etc.
+  ipAddress   String
+  userAgent   String?
+  referrer    String?
+  country     String?
+  city        String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  sessionId   String?
+  viewedAt    DateTime @default(now())
+  
+  @@map("page_views")
+}
+
+model ConversionEvent {
+  id          String   @id @default(cuid())
+  eventType   String   // button_click, form_submit, purchase_complete, download_start
+  page        String
+  element     String?  // button_id, form_name, etc.
+  value       String?  // additional data
+  ipAddress   String
+  userAgent   String?
+  sessionId   String?
+  createdAt   DateTime @default(now())
+  
+  @@map("conversion_events")
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  status    String   @default("new") // new, read, replied, archived
+  ipAddress String
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("contact_messages")
+}
+
+model SiteSettings {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+  
+  @@map("site_settings")
+}

@@ -1,0 +1,63 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#gradient)"/>
+  
+  <!-- Grid Pattern -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1E293B" stroke-width="1" opacity="0.3"/>
+    </pattern>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F172A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E293B;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  
+  <!-- Main Content -->
+  <g transform="translate(100, 150)">
+    <!-- Logo/Icon -->
+    <g transform="translate(0, 0)">
+      <rect width="80" height="80" rx="12" fill="#F59E0B"/>
+      <path d="M20 40L40 25L60 40V55L40 70L20 55V40Z" stroke="#0F172A" stroke-width="3" fill="none"/>
+      <circle cx="40" cy="47.5" r="6" fill="#0F172A"/>
+    </g>
+    
+    <!-- Title -->
+    <text x="100" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="48" font-weight="bold" fill="#FFFFFF">
+      AI Reality Check
+    </text>
+    
+    <!-- Subtitle -->
+    <text x="100" y="75" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" fill="#94A3B8">
+      What You Aren't Doing, What You Can Do, What You Will Be Able to Do
+    </text>
+    
+    <!-- Features -->
+    <g transform="translate(0, 120)">
+      <text x="0" y="30" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="600" fill="#F59E0B">
+        ✓ Practical AI Implementation Guide
+      </text>
+      <text x="0" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="600" fill="#F59E0B">
+        ✓ Real-World Case Studies
+      </text>
+      <text x="0" y="100" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="600" fill="#F59E0B">
+        ✓ Future-Ready Strategies
+      </text>
+    </g>
+    
+    <!-- Price -->
+    <g transform="translate(0, 260)">
+      <rect width="200" height="60" rx="8" fill="#F59E0B"/>
+      <text x="100" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="bold" fill="#0F172A" text-anchor="middle">
+        Only $3 USD
+      </text>
+    </g>
+  </g>
+  
+  <!-- Decorative Elements -->
+  <circle cx="1000" cy="150" r="100" fill="#F59E0B" opacity="0.1"/>
+  <circle cx="1100" cy="400" r="60" fill="#F59E0B" opacity="0.15"/>
+  <circle cx="950" cy="500" r="80" fill="#F59E0B" opacity="0.08"/>
+</svg>
