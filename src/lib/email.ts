@@ -10,9 +10,90 @@ const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@yourdomain.com'
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || 'support@yourdomain.com'
 const SITE_URL = process.env.SITE_URL || 'http://localhost:3000'
 const PURCHASE_TEMPLATE_ID = process.env.SENDGRID_PURCHASE_TEMPLATE_ID || 'd-7e4a7874657349d4bdc34d9a64edc5b1'
+const LOGIN_TEMPLATE_ID = process.env.SENDGRID_LOGIN_TEMPLATE_ID || 'd-7e4a7874657349d4bdc34d9a64edc5b2' // You'll need to create this template in SendGrid
 
 // Email templates
 export const emailTemplates = {
+  loginLink: (data: {
+    email: string
+    loginUrl: string
+    expiresAt: string
+  }) => ({
+    subject: 'Your Login Link for AI Reality Check',
+    html: `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Your Login Link</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8fafc; }
+            .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+            .header { background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: white; padding: 40px 30px; text-align: center; }
+            .content { padding: 40px 30px; }
+            .login-section { background-color: #f1f5f9; border-radius: 12px; padding: 30px; margin: 30px 0; text-align: center; }
+            .login-button { display: inline-block; background-color: #F59E0B; color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 18px; margin: 20px 0; }
+            .login-button:hover { background-color: #EA580C; }
+            .warning { background-color: #FEF3C7; border-left: 4px solid #F59E0B; padding: 16px; margin: 20px 0; }
+            .footer { background-color: #f8fafc; padding: 30px; text-align: center; font-size: 14px; color: #64748b; }
+            .logo { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
+            .highlight { color: #F59E0B; font-weight: 600; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <div class="logo">AI Reality Check</div>
+              <h1>Access Your Purchases</h1>
+              <p>Click the link below to access your purchased products</p>
+            </div>
+            
+            <div class="content">
+              <p>Hello,</p>
+              <p>You requested a login link to access your purchased products. Click the button below to log in:</p>
+              
+              <div class="login-section">
+                <a href="${data.loginUrl}" class="login-button">Log In Now</a>
+                <p>This link will expire on ${new Date(data.expiresAt).toLocaleString()}.</p>
+              </div>
+              
+              <div class="warning">
+                <p><strong>Important:</strong> If you didn't request this login link, please ignore this email.</p>
+              </div>
+              
+              <p>Thank you for your purchase!</p>
+              <p>The AI Reality Check Team</p>
+            </div>
+            
+            <div class="footer">
+              <p>© ${new Date().getFullYear()} AI Reality Check. All rights reserved.</p>
+              <p>If you need assistance, please contact <a href="mailto:${SUPPORT_EMAIL}">${SUPPORT_EMAIL}</a></p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+    text: `
+Your Login Link for AI Reality Check
+
+Hello,
+
+You requested a login link to access your purchased products. Please use the link below to log in:
+
+${data.loginUrl}
+
+This link will expire on ${new Date(data.expiresAt).toLocaleString()}.
+
+Important: If you didn't request this login link, please ignore this email.
+
+Thank you for your purchase!
+The AI Reality Check Team
+
+© ${new Date().getFullYear()} AI Reality Check. All rights reserved.
+If you need assistance, please contact ${SUPPORT_EMAIL}
+    `
+  }),
   purchaseConfirmation: (data: {
     customerName: string
     downloadUrl: string
@@ -464,4 +545,46 @@ export async function sendAdminNotification({
     html,
     text: `${subject}\n\n${message}${data ? `\n\n${JSON.stringify(data, null, 2)}` : ''}`,
   })
+}
+
+// Send login link email
+export async function sendLoginLink(data: {
+  email: string
+  loginUrl: string
+  expiresAt: string
+}) {
+  try {
+    // Use SendGrid template if available
+    if (LOGIN_TEMPLATE_ID) {
+      const result = await sgMail.send({
+        to: data.email,
+        from: FROM_EMAIL,
+        templateId: LOGIN_TEMPLATE_ID,
+        dynamicTemplateData: {
+          email: data.email,
+          loginUrl: data.loginUrl,
+          expiresAt: new Date(data.expiresAt).toLocaleString(),
+          year: new Date().getFullYear(),
+          supportEmail: SUPPORT_EMAIL,
+          siteUrl: SITE_URL
+        },
+      })
+      return { result, error: null }
+    }
+
+    // Fallback to custom template
+    const template = emailTemplates.loginLink(data)
+    return sendEmail({
+      to: data.email,
+      subject: template.subject,
+      html: template.html,
+      text: template.text,
+    })
+  } catch (error) {
+    console.error('Error sending login link email:', error)
+    return { 
+      result: null, 
+      error: error instanceof Error ? error.message : 'Failed to send login email' 
+    }
+  }
 }
