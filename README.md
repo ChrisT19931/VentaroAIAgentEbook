@@ -33,7 +33,7 @@ A modern, high-converting eBook sales platform built with Next.js 14, TypeScript
 - Node.js 18+ 
 - PostgreSQL database
 - Stripe account (test/live)
-- Resend account for emails
+- SendGrid account for emails
 - Git
 
 ## 🚀 Quick Start

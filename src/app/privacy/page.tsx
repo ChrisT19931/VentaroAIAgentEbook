@@ -81,7 +81,7 @@ export default function PrivacyPage() {
             <h3>Service Providers</h3>
             <ul>
               <li><strong>Stripe:</strong> For payment processing (subject to Stripe's privacy policy)</li>
-              <li><strong>Resend:</strong> For email delivery (subject to Resend's privacy policy)</li>
+              <li><strong>SendGrid:</strong> For email delivery (subject to SendGrid's privacy policy)</li>
               <li><strong>Analytics Providers:</strong> For website analytics (anonymized data)</li>
               <li><strong>Cloud Storage:</strong> For secure file storage and delivery</li>
             </ul>
